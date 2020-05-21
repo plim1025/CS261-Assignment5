@@ -1,4 +1,4 @@
-CC=gcc --std=c99 -g
+CC=gcc --std=c99 -g -ggdb
 
 all: test unittest
 

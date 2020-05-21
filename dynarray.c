@@ -40,6 +40,8 @@ struct dynarray* dynarray_create() {
 void dynarray_free(struct dynarray* da) {
 
   assert(da);
+  for(int i = 0; i < da->length; i++)
+    free(*(da->data));
   free(da->data);
   free(da);
 

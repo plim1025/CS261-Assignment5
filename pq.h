@@ -2,7 +2,7 @@
  * This file contains the definition of the interface for a priority queue.
  * You will implement the structures and functiond declared here in pq.c.
  */
-
+#include "dynarray.h"
 #ifndef __PQ_H
 #define __PQ_H
 
@@ -12,6 +12,7 @@ struct pq* pq_create();
 void pq_free(struct pq* pq);
 int pq_isempty(struct pq* pq);
 void pq_insert(struct pq* pq, void* data, int priority);
+void swap_items(struct dynarray* arr, int ind1, int ind2);
 void* pq_max(struct pq* pq);
 int pq_max_priority(struct pq* pq);
 void* pq_max_dequeue(struct pq* pq);

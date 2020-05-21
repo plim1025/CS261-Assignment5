@@ -9,7 +9,8 @@
  */
 
 #include <stdlib.h>
-
+#include <assert.h>
+#include "dynarray.h"
 #include "pq.h"
 
 /*
@@ -18,7 +19,15 @@
  * in addition, you want to define an element struct with both data and priority,
  * corresponding to the elements of the priority queue.
  */
-struct pq;
+struct pq {
+  struct dynarray* arr;
+  int size;
+};
+
+struct item {
+  void* data;
+  int priority;
+};
 
 
 /*
@@ -26,7 +35,10 @@ struct pq;
  * return a pointer to it.
  */
 struct pq* pq_create() {
-  return NULL;
+  struct pq* pq = malloc(sizeof(struct pq));
+  pq->arr = dynarray_create();
+  pq->size = 0;
+  return pq;
 }
 
 
@@ -39,7 +51,9 @@ struct pq* pq_create() {
  *   pq - the priority queue to be destroyed.  May not be NULL.
  */
 void pq_free(struct pq* pq) {
-
+  assert(pq);
+  dynarray_free(pq->arr);
+  free(pq);
 }
 
 
@@ -55,7 +69,8 @@ void pq_free(struct pq* pq) {
  *   Should return 1 if pq is empty and 0 otherwise.
  */
 int pq_isempty(struct pq* pq) {
-  return 1;
+  assert(pq);
+  return !pq->size;
 }
 
 
@@ -77,7 +92,29 @@ int pq_isempty(struct pq* pq) {
  *     be the FIRST one returned.
  */
 void pq_insert(struct pq* pq, void* data, int priority) {
+  assert(pq);
+  struct item item = malloc(sizeof(item));
+  item->data = data;
+  item->priority = priority;
+  dynarray_insert(pq->arr, -1, item);
+  pq->size++;
 
+  int current_ind = pq->size - 1;
+  int parent_ind = current_ind/2;
+  int parent_priority = ((struct item*) dynarray_get(pq->arr, parent_ind))->priority;
+  while(parent_priority < priority) {
+    swap_items(pq->arr, current_ind, parent_ind);
+    current_ind = parent_ind;
+    parent_ind = current_ind/2;
+    parent_priority = ((struct item*) dynarray_get(pq->arr, parent_ind))->priority;
+  }
+}
+
+void swap_items(struct dynarray* arr, int ind1, int ind2) {
+  struct item* item1 = (struct item*) dynarray_get(arr, ind1);
+  struct item* item2 = (struct item*) dynarray_get(arr, ind2);
+  dynarray_set(arr, ind1, item2);
+  dynarray_set(arr, ind2, item1);
 }
 
 
@@ -94,7 +131,9 @@ void pq_insert(struct pq* pq, void* data, int priority) {
  *   max priority value.
  */
 void* pq_max(struct pq* pq) {
-  return NULL;
+  assert(pq);
+  struct item* max_item = dynarray_get(pq->arr, 0);
+  return max_item->data;
 }
 
 
