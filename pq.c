@@ -4,8 +4,8 @@
  * you need in this file to implement a priority queue.  Make sure to add your
  * name and @oregonstate.edu email address below:
  *
- * Name:
- * Email:
+ * Name: Paul Lim
+ * Email: limp@oregonstate.edu
  */
 
 #include <stdlib.h>
@@ -15,8 +15,8 @@
 /*
  * This is the structure that represents a priority queue.  You must define
  * this struct to contain the data needed to implement a priority queue.
- * in addition, you want to define an element struct with both data and priority, 
- * corresponding to the elements of the priority queue. 
+ * in addition, you want to define an element struct with both data and priority,
+ * corresponding to the elements of the priority queue.
  */
 struct pq;
 
