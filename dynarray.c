@@ -41,7 +41,7 @@ void dynarray_free(struct dynarray* da) {
 
   assert(da);
   for(int i = 0; i < da->length; i++)
-    free(*(da->data));
+    free((da->data)[i]);
   free(da->data);
   free(da);
 
@@ -139,7 +139,7 @@ void dynarray_remove(struct dynarray* da, int idx) {
   }
 
   da->length--;
-
+  free((da->data)[idx]);
 }
 
 

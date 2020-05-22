@@ -93,7 +93,7 @@ int pq_isempty(struct pq* pq) {
  */
 void pq_insert(struct pq* pq, void* data, int priority) {
   assert(pq);
-  struct item item = malloc(sizeof(item));
+  struct item* item = malloc(sizeof(item));
   item->data = data;
   item->priority = priority;
   dynarray_insert(pq->arr, -1, item);
@@ -150,7 +150,9 @@ void* pq_max(struct pq* pq) {
  *   with highest priority value.
  */
 int pq_max_priority(struct pq* pq) {
-  return 0;
+  assert(pq);
+  struct item* max_item = dynarray_get(pq->arr, 0);
+  return max_item->priority;
 }
 
 
@@ -168,5 +170,30 @@ int pq_max_priority(struct pq* pq) {
  *   highest priority value.
  */
 void* pq_max_dequeue(struct pq* pq) {
-  return NULL;
+  assert(pq);
+  void *data = ((struct item*)dynarray_get(pq->arr, 0))->data;
+  swap_items(pq->arr, 0, pq->size-1);
+  dynarray_remove(pq->arr, pq->size-1);
+  pq->size--;
+  int current_ind = 0;
+  int left_ind = 2*current_ind + 1;
+  int right_ind = 2*current_ind + 2;
+  int current_priority = current_ind < pq->size ? ((struct item*) dynarray_get(pq->arr, current_ind))->priority : -1;
+  int left_priority = left_ind < pq->size ? ((struct item*) dynarray_get(pq->arr, left_ind))->priority : -1;
+  int right_priority = right_ind < pq->size ? ((struct item*) dynarray_get(pq->arr, right_ind))->priority : -1;
+  while(current_priority < left_priority || current_priority < right_priority) {
+    if(left_priority > right_priority) {
+      swap_items(pq->arr, current_ind, left_ind);
+      current_ind = left_ind;
+    } else {
+      swap_items(pq->arr, current_ind, right_ind);
+      current_ind = right_ind;
+    }
+    left_ind = 2*current_ind + 1;
+    right_ind = 2*current_ind + 2;
+    current_priority = ((struct item*) dynarray_get(pq->arr, current_ind))->priority;
+    left_priority = left_ind < pq->size ? ((struct item*) dynarray_get(pq->arr, left_ind))->priority : -1;
+    right_priority = right_ind < pq->size ? ((struct item*) dynarray_get(pq->arr, right_ind))->priority : -1;
+  }
+  return data;
 }
